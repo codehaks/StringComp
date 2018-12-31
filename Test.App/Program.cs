@@ -10,6 +10,8 @@ namespace Test.App
 {
     class Program
     {
+        public static int numberOfRequests = 100;
+
         static void Main(string[] args)
         {
             var services = new ServiceCollection();
@@ -22,6 +24,11 @@ namespace Test.App
 
             if (args != null)
             {
+                if (args.Length > 1)
+                {
+                    numberOfRequests = int.Parse(args[1]);
+                }
+
                 switch (args[0])
                 {
                     case "query":
@@ -40,6 +47,8 @@ namespace Test.App
                         break;
                 }
 
+
+
             }
 
         }
@@ -55,7 +64,11 @@ namespace Test.App
             int count = 0;
 
             var sw = Stopwatch.StartNew();
-            count = _db.Users.Where(u => u.Givenname.ToLower() == "jack").Count();
+
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = _db.Users.Where(u => u.Givenname.ToLower() == "jack").Count();
+            }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
@@ -67,7 +80,10 @@ namespace Test.App
             int count = 0;
 
             var sw = Stopwatch.StartNew();
-            count = Users.Where(u => u.Givenname.ToLower() == "jack").Count();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = Users.Where(u => u.Givenname.ToLower() == "jack").Count();
+            }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
@@ -76,7 +92,10 @@ namespace Test.App
         {
             int count = 0;
             var sw = Stopwatch.StartNew();
-            count = Users.Where(u => string.Equals(u.Givenname, "jack", StringComparison.OrdinalIgnoreCase)).Count();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = Users.Where(u => string.Equals(u.Givenname, "jack", StringComparison.OrdinalIgnoreCase)).Count();
+            }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
