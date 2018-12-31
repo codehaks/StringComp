@@ -24,6 +24,10 @@ namespace Test.App
             {
                 switch (args[0])
                 {
+                    case "query":
+                        TestToLowerQuery();
+                        break;
+
                     case "tolower":
                         TestToLower();
                         break;
@@ -44,6 +48,18 @@ namespace Test.App
 
         private static IList<User> Users;
 
+        private static void TestToLowerQuery()
+        {
+
+
+            int count = 0;
+
+            var sw = Stopwatch.StartNew();
+            count = _db.Users.Where(u => u.Givenname.ToLower() == "jack").Count();
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
         private static void TestToLower()
         {
 
@@ -53,7 +69,7 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             count = Users.Where(u => u.Givenname.ToLower() == "jack").Count();
             sw.Stop();
-            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,3:N0}");
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
         private static void TestEqual()
@@ -62,7 +78,7 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             count = Users.Where(u => string.Equals(u.Givenname, "jack", StringComparison.OrdinalIgnoreCase)).Count();
             sw.Stop();
-            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,3:N0}");
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
     }
 }
