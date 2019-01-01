@@ -12,9 +12,12 @@ namespace Test.App
     class Program
     {
         public static int numberOfRequests = 100;
+        private static PeopleDbContext _db;
+        private static IList<User> Users;
 
         static void Main(string[] args)
         {
+
             var services = new ServiceCollection();
             services.AddTransient<PeopleDbContext>();
 
@@ -22,6 +25,7 @@ namespace Test.App
 
             _db = provider.GetService<PeopleDbContext>();
             Users = _db.Users.ToList();
+
 
             if (args != null)
             {
@@ -56,10 +60,6 @@ namespace Test.App
             }
 
         }
-
-        private static PeopleDbContext _db;
-
-        private static IList<User> Users;
 
         private static void TestToLowerQuery()
         {
@@ -135,13 +135,10 @@ namespace Test.App
 
             for (int i = 0; i < numberOfRequests; i++)
             {
-                //count = UsersByte.Where(u => u==jackAsByte).Count();
+                count = 0;
                 for (int j = 0; j < UsersByte.Count; j++)
                 {
-                    //for (int k = 0; k < UsersByte[j].Length; k++)
-                    //{
 
-                    //}
                     if ((UsersByte[j].SequenceEqual(jackAsByte)))
                     {
                         count++;
