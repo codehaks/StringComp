@@ -12,7 +12,7 @@ namespace Test.App
     {
         public static int numberOfRequests = 100;
         public static PeopleDbContext _db;
-        
+
         public static string Term;
 
         static void Main(string[] args)
@@ -37,6 +37,11 @@ namespace Test.App
                 if (args.Length > 2)
                 {
                     Term = args[2];
+                    if (Term.Length<3)
+                    {
+                        Console.WriteLine("Too short!");
+                        return;
+                    }
                 }
 
                 switch (args[0])
@@ -64,6 +69,9 @@ namespace Test.App
                         break;
                     case "equal2":
                         TestEqual2(users);
+                        break;
+                    case "equal3":
+                        TestEqual3(users);
                         break;
 
                     default:
@@ -109,12 +117,11 @@ namespace Test.App
 
 
             int count = 0;
-
-            var sw = Stopwatch.StartNew();
             var term = Term.ToLower();
+            var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => u.ToLower() ==term).Count();
+                count = users.Where(u => u.ToLower() == term).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
@@ -144,6 +151,56 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
+        private static void TestEqual3(IList<string> users)
+        {
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = 0;
+
+                for (int j = 0; j < users.Count; j++)
+                {
+
+                    if (!Equals(users[j][0], Term[0]))
+                    {
+                        continue;
+                    }
+                    else if (string.Equals(users[j], Term))
+                    {
+                        count++;
+                    }
+                }
+
+
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+
+        private static void TestByte(IList<string> users)
+        {
+            ConvertStringToByteArray(users, out List<byte[]> UsersByte, out byte[] termAsByte);
+
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = 0;
+                for (int j = 0; j < UsersByte.Count; j++)
+                {
+
+                    if ((UsersByte[j].SequenceEqual(termAsByte)))
+                    {
+                        count++;
+                    }
+                }
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
 
         private static void TestBlaze(IList<string> users)
         {
@@ -164,10 +221,15 @@ namespace Test.App
                 count = 0;
                 for (int j = 0; j < UsersByte.Count; j++)
                 {
-                    if (UsersByte[j][0] != jackAsByte[0])
+                    if (UsersByte[j][0] != jackAsByte[0]
+                        || UsersByte[j][1] != jackAsByte[1]
+                        || UsersByte[j][2] != jackAsByte[2]
+                        //|| UsersByte[j][3] != jackAsByte[3]
+                        )
                     {
                         continue;
                     }
+                    else
                     if ((UsersByte[j].SequenceEqual(jackAsByte)))
                     {
                         count++;
@@ -178,34 +240,15 @@ namespace Test.App
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
-        private static void TestByte(IList<string> users)
+        private static void ConvertStringToByteArray(IList<string> users, out List<byte[]> UsersByte, out byte[] termAsByte)
         {
-            List<byte[]> UsersByte = new List<byte[]>();
+            UsersByte = new List<byte[]>();
             foreach (var item in users)
             {
                 UsersByte.Add(Encoding.ASCII.GetBytes(item.ToLower().Trim()));
             }
 
-            var termAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
-
-
-            int count = 0;
-            var sw = Stopwatch.StartNew();
-
-            for (int i = 0; i < numberOfRequests; i++)
-            {
-                count = 0;
-                for (int j = 0; j < UsersByte.Count; j++)
-                {
-
-                    if ((UsersByte[j].SequenceEqual(termAsByte)))
-                    {
-                        count++;
-                    }
-                }
-            }
-            sw.Stop();
-            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+            termAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
         }
     }
 }
