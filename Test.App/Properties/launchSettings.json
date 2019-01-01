@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Test.App": {
+      "commandName": "Project",
+      "commandLineArgs": "byte"
+    }
+  }
+}

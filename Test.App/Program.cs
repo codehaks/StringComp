@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Test.Data;
 
 namespace Test.App
@@ -33,6 +34,9 @@ namespace Test.App
                 {
                     case "query":
                         TestToLowerQuery();
+                        break;
+                    case "byte":
+                        TestByte();
                         break;
 
                     case "tolower":
@@ -95,6 +99,54 @@ namespace Test.App
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = Users.Where(u => string.Equals(u.Givenname, "jack", StringComparison.OrdinalIgnoreCase)).Count();
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static void TestByte()
+        {
+            List<byte[]> UsersByte = new List<byte[]>();
+
+            //var testUsers = new List<string>()
+            //{
+            //    "Jack","jack","Ali"
+            //};
+
+            //foreach (var item in testUsers)
+            //{
+            //    UsersByte.Add(Encoding.ASCII.GetBytes(item.ToLower().Trim()));
+            //}
+
+
+
+            foreach (var item in Users)
+            {
+                UsersByte.Add(Encoding.ASCII.GetBytes(item.Givenname.ToLower().Trim()));
+            }
+
+
+
+            var jackAsByte = Encoding.ASCII.GetBytes("jack");
+
+
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                //count = UsersByte.Where(u => u==jackAsByte).Count();
+                for (int j = 0; j < UsersByte.Count; j++)
+                {
+                    //for (int k = 0; k < UsersByte[j].Length; k++)
+                    //{
+
+                    //}
+                    if ((UsersByte[j].SequenceEqual(jackAsByte)))
+                    {
+                        count++;
+                    }
+                }
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
