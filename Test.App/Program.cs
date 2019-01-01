@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PeopleApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +12,7 @@ namespace Test.App
     {
         public static int numberOfRequests = 100;
         public static PeopleDbContext _db;
-        public static IList<User> Users;
+        
         public static string Term;
 
         static void Main(string[] args)
@@ -25,8 +24,8 @@ namespace Test.App
             var provider = services.BuildServiceProvider();
 
             _db = provider.GetService<PeopleDbContext>();
-            Users = _db.Users.ToList();
-            Term = "jack";
+            var users = _db.Users.Select(u => u.Givenname.ToLower().Trim()).ToList();
+            Term = "Jack";
 
             if (args != null)
             {
@@ -45,24 +44,28 @@ namespace Test.App
                     case "query":
                         TestToLowerQuery();
                         break;
+                    case "blaze":
+                        TestBlaze(users);
+                        break;
+
                     case "byte":
-                        TestByte();
+                        TestByte(users);
                         break;
 
                     case "tolower":
-                        TestToLower();
+                        TestToLower(users);
+                        break;
+                    case "tolower2":
+                        TestToLower2(users);
                         break;
 
                     case "equal":
-                        TestEqual();
+                        TestEqual(users);
                         break;
 
                     default:
                         break;
                 }
-
-
-
             }
 
         }
@@ -77,13 +80,13 @@ namespace Test.App
 
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = _db.Users.Where(u => u.Givenname.ToLower() == Term).Count();
+                count = _db.Users.Where(u => u.Givenname.ToLower() == Term.ToLower()).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
-        private static void TestToLower()
+        private static void TestToLower(IList<string> users)
         {
 
 
@@ -92,33 +95,49 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = Users.Where(u => u.Givenname.ToLower() == Term).Count();
+                count = users.Where(u => u.ToLower() == Term.ToLower()).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
-        private static void TestEqual()
+        private static void TestToLower2(IList<string> users)
+        {
+
+
+            int count = 0;
+
+            var sw = Stopwatch.StartNew();
+            var term = Term.ToLower();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = users.Where(u => u.ToLower() ==term).Count();
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static void TestEqual(IList<string> users)
         {
             int count = 0;
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = Users.Where(u => string.Equals(u.Givenname, Term, StringComparison.OrdinalIgnoreCase)).Count();
+                count = users.Where(u => string.Equals(u, Term, StringComparison.OrdinalIgnoreCase)).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
-        private static void TestBlaze()
+        private static void TestBlaze(IList<string> users)
         {
             List<byte[]> UsersByte = new List<byte[]>();
-            foreach (var item in Users)
+            foreach (var item in users)
             {
-                UsersByte.Add(Encoding.ASCII.GetBytes(item.Givenname.Trim()));
+                UsersByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
             }
 
-            var jackAsByte = Encoding.ASCII.GetBytes(Term);
+            var jackAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
 
 
             int count = 0;
@@ -129,7 +148,10 @@ namespace Test.App
                 count = 0;
                 for (int j = 0; j < UsersByte.Count; j++)
                 {
-
+                    if (UsersByte[j][0] != jackAsByte[0])
+                    {
+                        continue;
+                    }
                     if ((UsersByte[j].SequenceEqual(jackAsByte)))
                     {
                         count++;
@@ -140,15 +162,15 @@ namespace Test.App
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
-        private static void TestByte()
+        private static void TestByte(IList<string> users)
         {
             List<byte[]> UsersByte = new List<byte[]>();
-            foreach (var item in Users)
+            foreach (var item in users)
             {
-                UsersByte.Add(Encoding.ASCII.GetBytes(item.Givenname.ToLower().Trim()));
+                UsersByte.Add(Encoding.ASCII.GetBytes(item.ToLower().Trim()));
             }
-                       
-            var jackAsByte = Encoding.ASCII.GetBytes(Term);
+
+            var termAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
 
 
             int count = 0;
@@ -160,7 +182,7 @@ namespace Test.App
                 for (int j = 0; j < UsersByte.Count; j++)
                 {
 
-                    if ((UsersByte[j].SequenceEqual(jackAsByte)))
+                    if ((UsersByte[j].SequenceEqual(termAsByte)))
                     {
                         count++;
                     }
