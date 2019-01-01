@@ -91,12 +91,11 @@ namespace Test.App
 
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = _db.Users.Where(u => u.Givenname.ToLower() == Term.ToLower()).Count();
+                count = _db.Users.Count(u => u.Givenname.ToLower() == Term.ToLower());
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
         private static void TestToLower(IList<string> users)
         {
 
@@ -111,7 +110,6 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
         private static void TestToLower2(IList<string> users)
         {
 
@@ -126,7 +124,6 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
         private static void TestEqual(IList<string> users)
         {
             int count = 0;
@@ -138,7 +135,6 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
         private static void TestEqual2(IList<string> users)
         {
             int count = 0;
@@ -177,8 +173,6 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
-
         private static void TestByte(IList<string> users)
         {
             ConvertStringToByteArray(users, out List<byte[]> UsersByte, out byte[] termAsByte);
@@ -201,7 +195,6 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
-
         private static void TestBlaze(IList<string> users)
         {
             List<byte[]> UsersByte = new List<byte[]>();
@@ -224,7 +217,7 @@ namespace Test.App
                     if (UsersByte[j][0] != jackAsByte[0]
                         || UsersByte[j][1] != jackAsByte[1]
                         || UsersByte[j][2] != jackAsByte[2]
-                        //|| UsersByte[j][3] != jackAsByte[3]
+                        || UsersByte[j][3] != jackAsByte[3]
                         )
                     {
                         continue;
