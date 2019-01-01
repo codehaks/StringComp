@@ -268,6 +268,7 @@ namespace Test.App
                     }
                     else
                     if (CompareBites(termBits, UsersByte[j]))
+                    //if (IsSame(termBits.Xor(UsersByte[j])))
                     {
                         count++;
                     }
@@ -275,6 +276,21 @@ namespace Test.App
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static bool IsSame(BitArray bits)
+        {
+
+            for (int i = 0; i < bits.Length; i++)
+            {
+                //Console.WriteLine(bits[i]);
+                if (bits[i] == true)
+                {
+                    //  Console.WriteLine(i);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static bool CompareBites(BitArray bit1, BitArray bit2)

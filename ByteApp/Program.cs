@@ -19,12 +19,28 @@ namespace ByteApp
 
             Console.WriteLine(ToBinary(bits1));
             Console.WriteLine(ToBinary(bits2));
-            Console.WriteLine(ToBinary(bits1.Xor(bits2)));
 
+            //Console.WriteLine(ToBinary(bits1.Xor(bits2)));
+            var bits3 = bits1.Xor(bits2);
+            Console.WriteLine(ToBinary(bits3));
+            
+            
+            Console.WriteLine(IsSame(bits3));
+        }
 
-            var bits3 = bits1.And(bits2);
-            //ShowBits(bits1,bits3);
+        private static bool IsSame(BitArray bits)
+        {
 
+            for (int i = 0; i < bits.Length; i++)
+            {
+                //Console.WriteLine(bits[i]);
+                if (bits[i]==true)
+                {
+                  //  Console.WriteLine(i);
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static string ToBinary(BitArray bits)
