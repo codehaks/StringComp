@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace Test.App
                 if (args.Length > 2)
                 {
                     Term = args[2];
-                    if (Term.Length<3)
+                    if (Term.Length < 3)
                     {
                         Console.WriteLine("Too short!");
                         return;
@@ -52,7 +53,9 @@ namespace Test.App
                     case "blaze":
                         TestBlaze(users);
                         break;
-
+                    case "blaze2":
+                        TestBlaze2(users);
+                        break;
                     case "byte":
                         TestByte(users);
                         break;
@@ -231,6 +234,60 @@ namespace Test.App
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+        private static void TestBlaze2(IList<string> users)
+        {
+            List<BitArray> UsersByte = new List<BitArray>();
+            foreach (var item in users)
+            {
+                var bits = new BitArray(Encoding.ASCII.GetBytes(item.Trim()));
+                UsersByte.Add(bits);
+            }
+
+            var termAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
+            var termBits = new BitArray(termAsByte);
+
+
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = 0;
+                for (int j = 0; j < UsersByte.Count; j++)
+                {
+
+                    if (termBits[0] != UsersByte[j][0])
+                    {
+                        continue;
+                    }
+                    else
+                    if (termBits.Length != UsersByte[j].Length)
+                    {
+                        continue;
+                    }
+                    else
+                    if (CompareBites(termBits, UsersByte[j]))
+                    {
+                        count++;
+                    }
+                }
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static bool CompareBites(BitArray bit1, BitArray bit2)
+        {
+            for (int i = 0; i < bit1.Length; i++)
+            {
+                if (bit1[i] != bit2[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static void ConvertStringToByteArray(IList<string> users, out List<byte[]> UsersByte, out byte[] termAsByte)
