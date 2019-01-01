@@ -25,7 +25,7 @@ namespace Test.App
 
             _db = provider.GetService<PeopleDbContext>();
             var users = _db.Users.Select(u => u.Givenname.ToLower().Trim()).ToList();
-            Term = "Jack";
+            Term = "Jack".ToLower();
 
             if (args != null)
             {
@@ -61,6 +61,9 @@ namespace Test.App
 
                     case "equal":
                         TestEqual(users);
+                        break;
+                    case "equal2":
+                        TestEqual2(users);
                         break;
 
                     default:
@@ -124,6 +127,19 @@ namespace Test.App
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = users.Where(u => string.Equals(u, Term, StringComparison.OrdinalIgnoreCase)).Count();
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static void TestEqual2(IList<string> users)
+        {
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+
+                count = users.Where(u => char.Equals(u[0], Term[0]) && string.Equals(u, Term, StringComparison.OrdinalIgnoreCase)).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
