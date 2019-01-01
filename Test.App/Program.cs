@@ -107,19 +107,6 @@ namespace Test.App
         private static void TestByte()
         {
             List<byte[]> UsersByte = new List<byte[]>();
-
-            //var testUsers = new List<string>()
-            //{
-            //    "Jack","jack","Ali"
-            //};
-
-            //foreach (var item in testUsers)
-            //{
-            //    UsersByte.Add(Encoding.ASCII.GetBytes(item.ToLower().Trim()));
-            //}
-
-
-
             foreach (var item in Users)
             {
                 UsersByte.Add(Encoding.ASCII.GetBytes(item.Givenname.ToLower().Trim()));
