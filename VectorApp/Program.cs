@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 
 namespace VectorApp
@@ -14,7 +15,7 @@ namespace VectorApp
             var n = 8;
             var nums = new int[n];
 
-            for (int i = 10; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 nums[i] = i;
             }
@@ -32,9 +33,10 @@ namespace VectorApp
 
             for (int i = 0; i < numberOfRequests; i++)
             {
+                result = 0;
                 for (int j = 0; j < n.Length; j++)
                 {
-                    result = n[j] + n[j];
+                    result += n[j] + n[j];
                 }
             }
 
@@ -54,9 +56,17 @@ namespace VectorApp
 
             for (int i = 0; i < numberOfRequests; i++)
             {
+                result = 0;
                 vr = vn + vn;
             }
+
+            var vresult = new int[nums.Length];
+            vr.CopyTo(vresult);
+            result = vresult.Sum();
+
             s.Stop();
+
+
 
             Console.WriteLine($" {result} => {s.ElapsedMilliseconds}");
         }
