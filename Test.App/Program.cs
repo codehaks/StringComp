@@ -13,18 +13,15 @@ namespace Test.App
     {
         public static int numberOfRequests = 100;
         public static PeopleDbContext _db;
-
         public static string Term;
-
         static void Main(string[] args)
         {
-
             var services = new ServiceCollection();
             services.AddTransient<PeopleDbContext>();
-
             var provider = services.BuildServiceProvider();
-
             _db = provider.GetService<PeopleDbContext>();
+            
+            //--- Cache data to List<String>
             var users = _db.Users.Select(u => u.Givenname.ToLower().Trim()).ToList();
             Term = "Jack".ToLower();
 
@@ -86,30 +83,27 @@ namespace Test.App
 
         private static void TestToLowerQuery()
         {
-
-
             int count = 0;
-
             var sw = Stopwatch.StartNew();
 
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = _db.Users.Count(u => u.Givenname.ToLower() == Term.ToLower());
             }
+
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
         private static void TestToLower(IList<string> users)
         {
-
-
             int count = 0;
-
             var sw = Stopwatch.StartNew();
+
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => u.ToLower() == Term.ToLower()).Count();
+                count = users.Where(u => u == Term.ToLower()).Count();
             }
+            
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
@@ -122,7 +116,7 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => u.ToLower() == term).Count();
+                count = users.Where(u => u == term).Count();
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
@@ -156,23 +150,8 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = 0;
-
-                for (int j = 0; j < users.Count; j++)
-                {
-
-                    if (!Equals(users[j][0], Term[0]))
-                    {
-                        continue;
-                    }
-                    else if (string.Equals(users[j], Term))
-                    {
-                        count++;
-                    }
-                }
-
-
-            }
+                 count = users.Where(u => string.Equals(u, Term)).Count();
+               }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
