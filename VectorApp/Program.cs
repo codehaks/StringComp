@@ -6,13 +6,15 @@ namespace VectorApp
 {
     class Program
     {
+        public static int numberOfRequests = 10000000;
+
         static void Main(string[] args)
         {
 
-            var n = 100000000;
-
+            var n = 8;
             var nums = new int[n];
-            for (int i = 0; i < n; i++)
+
+            for (int i = 10; i < n; i++)
             {
                 nums[i] = i;
             }
@@ -27,10 +29,15 @@ namespace VectorApp
         {
             long result = 0;
             var s = Stopwatch.StartNew();
-            for (int i = 0; i < n.Length; i++)
+
+            for (int i = 0; i < numberOfRequests; i++)
             {
-                result += (n[i] + n[i]);
+                for (int j = 0; j < n.Length; j++)
+                {
+                    result = n[j] + n[j];
+                }
             }
+
             s.Stop();
             Console.WriteLine($" {result} => {s.ElapsedMilliseconds}");
         }
@@ -40,22 +47,17 @@ namespace VectorApp
             long result = 0;
             var vecSize = Vector<int>.Count;
             var vr = new Vector<int>();
-            Console.WriteLine(vecSize);
-            
+            //Console.WriteLine(vecSize);
+
+            var vn = new Vector<int>(nums);
             var s = Stopwatch.StartNew();
 
-            for (int i = 0; i < nums.Length; i += vecSize)
+            for (int i = 0; i < numberOfRequests; i++)
             {
-                var vn = new Vector<int>(nums, i);
                 vr = vn + vn;
-                for (int j = 0; j < vecSize; j++)
-                {
-                    result = result + vr[j];
-                }
-                
             }
             s.Stop();
-           
+
             Console.WriteLine($" {result} => {s.ElapsedMilliseconds}");
         }
     }
