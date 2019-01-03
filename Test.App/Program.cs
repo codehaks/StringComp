@@ -21,7 +21,7 @@ namespace Test.App
             services.AddTransient<PeopleDbContext>();
             var provider = services.BuildServiceProvider();
             _db = provider.GetService<PeopleDbContext>();
-            
+
             //--- Cache data to List<String>
             var users = _db.Users.Select(u => u.Givenname.ToLower().Trim()).ToList();
             Term = "Jack".ToLower();
@@ -78,6 +78,10 @@ namespace Test.App
                         TestEqual3(users);
                         break;
 
+                    case "equal4":
+                        TestEqual4(users);
+                        break;
+
                     default:
                         break;
                 }
@@ -105,9 +109,9 @@ namespace Test.App
 
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => u == Term.ToLower()).Count();
+                count = users.Count(u => u == Term.ToLower());
             }
-            
+
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
@@ -120,7 +124,7 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => u == term).Count();
+                count = users.Count(u => u == term);
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
@@ -131,7 +135,7 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                count = users.Where(u => string.Equals(u, Term, StringComparison.OrdinalIgnoreCase)).Count();
+                count = users.Count(u => string.Equals(u, Term, StringComparison.OrdinalIgnoreCase));
             }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
@@ -154,8 +158,26 @@ namespace Test.App
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < numberOfRequests; i++)
             {
-                 count = users.Where(u => string.Equals(u, Term)).Count();
-               }
+                count = users.Count(u => string.Equals(u, Term));
+            }
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+        private static void TestEqual4(IList<string> users)
+        {
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = 0;
+                foreach (var user in users)
+                {
+                    if (string.Equals(user, Term))
+                    {
+                        count++;
+                    }
+                }
+            }
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
@@ -188,10 +210,7 @@ namespace Test.App
             {
                 UsersByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
             }
-
             var jackAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
-
-
             int count = 0;
             var sw = Stopwatch.StartNew();
 
