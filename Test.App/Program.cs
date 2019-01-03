@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Test.Data;
 
 namespace Test.App
@@ -52,6 +53,9 @@ namespace Test.App
                         break;
                     case "blaze2":
                         TestBlaze2(users);
+                        break;
+                    case "parallel":
+                        TestBlazeParallel(users);
                         break;
                     case "byte":
                         TestByte(users);
@@ -214,6 +218,42 @@ namespace Test.App
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
+        private static void TestBlazeParallel(IList<string> users)
+        {
+            List<byte[]> UsersByte = new List<byte[]>();
+            foreach (var item in users)
+            {
+                UsersByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
+            }
+
+            var jackAsByte = Encoding.ASCII.GetBytes(Term.ToLower());
+
+
+            int count = 0;
+            var sw = Stopwatch.StartNew();
+            Parallel.For(0, numberOfRequests, i =>
+            {
+                count = 0;
+                for (int j = 0; j < UsersByte.Count; j++)
+                {
+                    if (UsersByte[j][0] != jackAsByte[0]
+                        || UsersByte[j][1] != jackAsByte[1]
+                        || UsersByte[j][2] != jackAsByte[2]
+                        || UsersByte[j][3] != jackAsByte[3]
+                        )
+                    {
+                        continue;
+                    }
+                    else
+                    if ((UsersByte[j].SequenceEqual(jackAsByte)))
+                    {
+                        count++;
+                    }
+                }
+            });
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
         private static void TestBlaze2(IList<string> users)
         {
             List<BitArray> UsersByte = new List<BitArray>();
@@ -257,6 +297,7 @@ namespace Test.App
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
 
+
         private static bool IsSame(BitArray bits)
         {
 
@@ -271,7 +312,6 @@ namespace Test.App
             }
             return true;
         }
-
         private static bool CompareBites(BitArray bit1, BitArray bit2)
         {
             for (int i = 0; i < bit1.Length; i++)
@@ -284,7 +324,6 @@ namespace Test.App
 
             return true;
         }
-
         private static void ConvertStringToByteArray(IList<string> users, out List<byte[]> UsersByte, out byte[] termAsByte)
         {
             UsersByte = new List<byte[]>();
