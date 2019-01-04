@@ -8,43 +8,54 @@ namespace Test.App
 {
     public static class TestVector
     {
-        public static void Execute(int numberOfRequests,IList<string> users,string term)
+        public static void Execute(int numberOfRequests, IList<string> users, string term)
         {
             int count = 0;
 
-            List<BitArray> UsersByte = new List<BitArray>();
+            List<BitArray> usersAsBits = new List<BitArray>();
             foreach (var item in users)
             {
                 var bits = new BitArray(Encoding.ASCII.GetBytes(item.Trim()));
-                UsersByte.Add(bits);
+                usersAsBits.Add(bits);
             }
 
             var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
-            var termBits = new BitArray(termAsByte);
+            var termAsBits = new BitArray(termAsByte);
+            var totalCount = usersAsBits.Count;
+            var rem = totalCount % 8;
+            var rounds = totalCount / 8;
 
             var sw = Stopwatch.StartNew();
 
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = 0;
-                for (int j = 0; j < UsersByte.Count; j++)
-                {
 
-                    if (termBits[0] != UsersByte[j][0])
+
+                for (int j = 0; j < usersAsBits.Count; j++)
+                {
+                    if (termAsBits.Length != usersAsBits[j].Length)
                     {
                         continue;
                     }
-                    else
-                    if (termBits.Length != UsersByte[j].Length)
-                    {
-                        continue;
-                    }
-                    else
-                    if (CompareBites(termBits, UsersByte[j]))
-                    //if (IsSame(termBits.Xor(UsersByte[j])))
+
+                    //if (termAsBits[0] != usersAsBits[j][0])
+                    //{
+                    //    continue;
+                    //}
+                    //else
+                    //if (termAsBits.Length != usersAsBits[j].Length)
+                    //{
+                    //    continue;
+                    //}
+                    //else
+                    if (CompareBites(termAsBits, usersAsBits[j]))
+
                     {
                         count++;
                     }
+
+                    //count++;
                 }
             }
 
@@ -78,6 +89,49 @@ namespace Test.App
             }
 
             return true;
+        }
+
+
+        public static void Execute1(int numberOfRequests, IList<string> users, string term)
+        {
+            int count = 0;
+
+            List<BitArray> usersAsBits = new List<BitArray>();
+            foreach (var item in users)
+            {
+                var bits = new BitArray(Encoding.ASCII.GetBytes(item.Trim()));
+                usersAsBits.Add(bits);
+            }
+
+            var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
+            var termAsBits = new BitArray(termAsByte);
+            var totalCount = usersAsBits.Count;
+            var rem = totalCount % 8;
+            var rounds = totalCount / 8;
+
+            var sw = Stopwatch.StartNew();
+
+            for (int i = 0; i < numberOfRequests; i++)
+            {
+                count = 0;
+
+
+                for (int j = 0; j < usersAsBits.Count; j++)
+                {
+                    if (termAsBits.Length != usersAsBits[j].Length)
+                    {
+                        continue;
+                    }
+                    if (CompareBites(termAsBits, usersAsBits[j]))
+
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            sw.Stop();
+            Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
         }
     }
 }
