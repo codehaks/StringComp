@@ -32,7 +32,7 @@ namespace Test.App
             {
                 usersAsByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
                 //data.Concat
-                data = data.Concat(Encoding.ASCII.GetBytes(item.Trim())).ToArray();
+                data = data.Concat(Encoding.ASCII.GetBytes(item.Trim()+'\0')).ToArray();
             }
             //var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
 
