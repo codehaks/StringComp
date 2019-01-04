@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace VectorApp
 {
@@ -22,10 +23,28 @@ namespace VectorApp
 
             Sum(nums);
             SumVector(nums);
+            SumParallel(nums);
 
             Console.WriteLine();
         }
 
+        private static void SumParallel(int[] n)
+        {
+            long result = 0;
+            var s = Stopwatch.StartNew();
+
+            Parallel.For(0, numberOfRequests, i =>
+            {
+                result = 0;
+                for (int j = 0; j < n.Length; j++)
+                {
+                    result += n[j] + n[j];
+                }
+            });
+
+            s.Stop();
+            Console.WriteLine($" {result} => {s.ElapsedMilliseconds}");
+        }
         private static void Sum(int[] n)
         {
             long result = 0;
@@ -49,7 +68,7 @@ namespace VectorApp
             long result = 0;
             var vecSize = Vector<int>.Count;
             var vr = new Vector<int>();
-            //Console.WriteLine(vecSize);
+            Console.WriteLine(vecSize);
 
             var vn = new Vector<int>(nums);
             var s = Stopwatch.StartNew();
