@@ -12,7 +12,7 @@ namespace VectorApp
 
         static void Main(string[] args)
         {
-
+            Console.WriteLine("\n\n SIMD Sample");
             var n = (int)Math.Pow(8, 4);
             var nums = new int[n];
 
@@ -44,7 +44,7 @@ namespace VectorApp
 
             s.Stop();
             sec = s.ElapsedMilliseconds;
-            Console.WriteLine($" Sum : {result} => {s.ElapsedMilliseconds}");
+            Console.WriteLine($" Sum : {result} => {s.ElapsedMilliseconds,5:N0} ms");
         }
 
         private static void SumVector(int[] nums,out long sec)
@@ -70,7 +70,7 @@ namespace VectorApp
             s.Stop();
             sec = s.ElapsedMilliseconds;
 
-            Console.WriteLine($" Vec : {result} => {s.ElapsedMilliseconds}");
+            Console.WriteLine($" Vec : {result} => {s.ElapsedMilliseconds,5:N0} ms");
             
         }
     }
