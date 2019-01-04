@@ -49,8 +49,7 @@ namespace Test.App
                 count = 0;
                 for (int i = 0; i < data.Length / 32; i++)
                 {
-                    //Console.WriteLine(i);
-                    var vuser = new Vector<byte>(data.Skip(i * 32).Take(32).ToArray());
+                    var vuser = new Vector<byte>(data,i);
                     var vresult = Vector.Equals(vterm, vuser);
 
                     vresult.CopyTo(dest);
