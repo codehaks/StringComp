@@ -68,7 +68,7 @@ namespace VectorApp
             long result = 0;
             var vecSize = Vector<int>.Count;
             var vr = new Vector<int>();
-            Console.WriteLine(vecSize);
+            //Console.WriteLine(vecSize);
 
             var vn = new Vector<int>(nums);
             var s = Stopwatch.StartNew();
