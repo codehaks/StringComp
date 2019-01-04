@@ -79,12 +79,13 @@ namespace VectorApp
             {
                 result = 0;
                 vr = vn + vn;
-                IsHardwareAccelerated=Vector.IsHardwareAccelerated;
+          
 
 
             }
 
-             
+            IsHardwareAccelerated = Vector.IsHardwareAccelerated;
+
             var vresult = new int[nums.Length];
             vr.CopyTo(vresult);
             
