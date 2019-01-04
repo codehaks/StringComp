@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace Test.App
@@ -21,42 +23,27 @@ namespace Test.App
 
             var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
             var termAsBits = new BitArray(termAsByte);
+
+
+            var sw = Stopwatch.StartNew();
+            usersAsBits = usersAsBits.Where(u => u.Length == termAsBits.Length).ToList();
+
             var totalCount = usersAsBits.Count;
             var rem = totalCount % 8;
             var rounds = totalCount / 8;
 
-            var sw = Stopwatch.StartNew();
+            var vn = new Vector<bool>();
 
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = 0;
 
-
-                for (int j = 0; j < usersAsBits.Count; j++)
+                for (int j = 0; j < totalCount-rem; j+=8)
                 {
-                    if (termAsBits.Length != usersAsBits[j].Length)
-                    {
-                        continue;
-                    }
-
-                    //if (termAsBits[0] != usersAsBits[j][0])
-                    //{
-                    //    continue;
-                    //}
-                    //else
-                    //if (termAsBits.Length != usersAsBits[j].Length)
-                    //{
-                    //    continue;
-                    //}
-                    //else
-                    if (CompareBites(termAsBits, usersAsBits[j]))
-
-                    {
-                        count++;
-                    }
-
-                    //count++;
+                    vn= new Vector<bool>(usersAsBits[j]);
                 }
+
+  
             }
 
             sw.Stop();
