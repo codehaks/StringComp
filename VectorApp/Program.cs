@@ -73,20 +73,27 @@ namespace VectorApp
             var vn = new Vector<int>(nums);
             var s = Stopwatch.StartNew();
 
+            var IsHardwareAccelerated = false;
+
             for (int i = 0; i < numberOfRequests; i++)
             {
                 result = 0;
                 vr = vn + vn;
+                IsHardwareAccelerated=Vector.IsHardwareAccelerated;
+
+
             }
 
+             
             var vresult = new int[nums.Length];
             vr.CopyTo(vresult);
+            
             result = vresult.Sum();
 
             s.Stop();
 
 
-
+            Console.WriteLine("IsHardwareAccelerated :"+ IsHardwareAccelerated);
             Console.WriteLine($" {result} => {s.ElapsedMilliseconds}");
         }
     }

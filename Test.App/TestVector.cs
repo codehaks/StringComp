@@ -12,35 +12,33 @@ namespace Test.App
     {
         public static void Execute(int numberOfRequests, IList<string> users, string term)
         {
-            int count = 0;
-
-            List<BitArray> usersAsBits = new List<BitArray>();
+            List<byte[]> UsersByte = new List<byte[]>();
             foreach (var item in users)
             {
-                var bits = new BitArray(Encoding.ASCII.GetBytes(item.Trim()));
-                usersAsBits.Add(bits);
+                UsersByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
             }
-
             var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
-            var termAsBits = new BitArray(termAsByte);
-
+            int count = 0;
 
             var sw = Stopwatch.StartNew();
-            usersAsBits = usersAsBits.Where(u => u.Length == termAsBits.Length).ToList();
+            UsersByte = UsersByte.Where(u => u.Length == termAsByte.Length).ToList();
 
-            var totalCount = usersAsBits.Count;
+            var totalCount = UsersByte.Count;
             var rem = totalCount % 8;
             var rounds = totalCount / 8;
 
-            var vn = new Vector<bool>();
+            var vuser = new Vector<byte>();
+            var vterm= new Vector<byte>(termAsByte);
 
             for (int i = 0; i < numberOfRequests; i++)
             {
                 count = 0;
 
-                for (int j = 0; j < totalCount-rem; j+=8)
+                for (int j = 0; j < UsersByte.Count;j++)
                 {
-                    vn= new Vector<bool>(usersAsBits[j]);
+                    vuser= new Vector<byte>(UsersByte[j]);
+                    //var vresult = Vector. ^ vterm;
+                    //vresult.CopyTo
                 }
 
   
