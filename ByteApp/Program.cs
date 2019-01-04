@@ -17,6 +17,10 @@ namespace ByteApp
             var bits1 = new BitArray(Encoding.ASCII.GetBytes("jack"));
             var bits2 = new BitArray(Encoding.ASCII.GetBytes("jack"));
 
+            Console.WriteLine(sizeof(byte));
+            Console.WriteLine(sizeof(char));
+            //Console.WriteLine(bits2.);
+
             Console.WriteLine(ToBinary(bits1));
             Console.WriteLine(ToBinary(bits2));
 

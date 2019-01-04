@@ -82,6 +82,10 @@ namespace Test.App
                         TestEqual4(users);
                         break;
 
+                    case "vector":
+                        TestVector.Execute(numberOfRequests,users,Term);
+                        break;
+
                     default:
                         break;
                 }
