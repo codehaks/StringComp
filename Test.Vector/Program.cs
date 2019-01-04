@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Numerics;
 using System.Text;
+using System.Linq;
 
 namespace Test.VectorApp
 {
@@ -23,18 +24,23 @@ namespace Test.VectorApp
         static void Main(string[] args)
         {
             var term = Encoding.ASCII.GetBytes("jackjackjackjackjackjackjackjack");
-            var user = Encoding.ASCII.GetBytes("omidjackpopopopopopopopojackpopo");
+            var user = Encoding.ASCII.GetBytes("omidjackpopopopopopopopojackpopoomidjackpopopopopopopopojackpopoomidjackpopopopopopopopojackpopoomidjackpopopopopopopopojackpopo");
             var size = Vector<byte>.Count;
-            //new Vector<byte>()
+
             var vterm = new Vector<byte>(term);
-            var vuser = new Vector<byte>(user);
-
             var dest = new byte[32];
-            var vresult = Vector.Equals(vterm, vuser);
+            var count = 0;
+            for (int i = 0; i < user.Length/32; i++)
+            {
+                var vuser = new Vector<byte>(user.Skip(i*32).Take(32).ToArray());
+                var vresult = Vector.Equals(vterm, vuser);
 
-            vresult.CopyTo(dest);
+                vresult.CopyTo(dest);
+                count += GetCount(dest);
+            }
 
-            Console.WriteLine(GetCount(dest));
+
+            Console.WriteLine(count);
 
           
         }
@@ -42,7 +48,6 @@ namespace Test.VectorApp
         private static int GetCount(byte[] model)
         {
             var count = 0;
-            //var index = 0;
 
             for (int i = 0; i < 8; i++)
             {
@@ -55,8 +60,6 @@ namespace Test.VectorApp
                         same = false;
                         break;
                     }
-
-                    //index++;
                 }
 
                 if (same)

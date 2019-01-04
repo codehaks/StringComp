@@ -27,17 +27,38 @@ namespace Test.App
         public static void Execute(int numberOfRequests, IList<string> users, string term)
         {
             List<byte[]> usersAsByte = new List<byte[]>();
+            var data = Array.Empty<byte>();
             foreach (var item in users)
             {
                 usersAsByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
+                //data.Concat
+                data = data.Concat(Encoding.ASCII.GetBytes(item.Trim())).ToArray();
             }
-            var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
+            //var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
 
-            int count = 0;
-   
+            var termAsByte = Encoding.ASCII.GetBytes("jackjackjackjackjackjackjackjack");
+
+            var vterm = new Vector<byte>(termAsByte);
+            var dest = new byte[32];
+            var count = 0;
+
             var sw = Stopwatch.StartNew();
 
-         
+            for (int r = 0; r < numberOfRequests; r++)
+            {
+                count = 0;
+                for (int i = 0; i < data.Length / 32; i++)
+                {
+                    //Console.WriteLine(i);
+                    var vuser = new Vector<byte>(data.Skip(i * 32).Take(32).ToArray());
+                    var vresult = Vector.Equals(vterm, vuser);
+
+                    vresult.CopyTo(dest);
+                    count += GetCount(dest);
+                }
+            }
+
+
 
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
@@ -46,7 +67,6 @@ namespace Test.App
         private static int GetCount(byte[] model)
         {
             var count = 0;
-            //var index = 0;
 
             for (int i = 0; i < 8; i++)
             {
@@ -59,8 +79,6 @@ namespace Test.App
                         same = false;
                         break;
                     }
-
-                    //index++;
                 }
 
                 if (same)
@@ -71,6 +89,6 @@ namespace Test.App
             return count;
         }
 
-        
+
     }
 }
