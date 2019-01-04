@@ -23,7 +23,7 @@ namespace Test.VectorApp
         static void Main(string[] args)
         {
             var term = Encoding.ASCII.GetBytes("jackjackjackjackjackjackjackjack");
-            var user = Encoding.ASCII.GetBytes("omidjkkkpopopopopopopopopopopopo");
+            var user = Encoding.ASCII.GetBytes("omidjackpopopopopopopopojackpopo");
             var size = Vector<byte>.Count;
             //new Vector<byte>()
             var vterm = new Vector<byte>(term);
@@ -34,9 +34,37 @@ namespace Test.VectorApp
 
             vresult.CopyTo(dest);
 
-            Console.WriteLine(dest);
+            Console.WriteLine(GetCount(dest));
 
           
+        }
+
+        private static int GetCount(byte[] model)
+        {
+            var count = 0;
+            //var index = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                var same = true;
+                for (int k = 0; k < 4; k++)
+                {
+                  
+                    if (model[i*4+k] != 255)
+                    {
+                        same = false;
+                        break;
+                    }
+
+                    //index++;
+                }
+
+                if (same)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         private static string ToBinaryChar(bool[] bits)

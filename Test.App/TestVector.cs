@@ -26,67 +26,80 @@ namespace Test.App
 
         public static void Execute(int numberOfRequests, IList<string> users, string term)
         {
-            List<BitArray> usersAsBits = new List<BitArray>();
+            List<byte[]> usersAsByte = new List<byte[]>();
             foreach (var item in users)
             {
-                var bits = new BitArray(Encoding.ASCII.GetBytes(item.Trim()));
-                usersAsBits.Add(bits);
+                usersAsByte.Add(Encoding.ASCII.GetBytes(item.Trim()));
             }
-
             var termAsByte = Encoding.ASCII.GetBytes(term.ToLower());
-            var termAsBits = new BitArray(termAsByte);
-
+            var termLength = termAsByte.Length;
             int count = 0;
+            var tempName = new byte[32];
 
+            var termByte = Encoding.ASCII.GetBytes("jackjackjackjackjackjackjackjack");
+            var size = Vector<byte>.Count;
+            var dest = new byte[size];
             var sw = Stopwatch.StartNew();
-            usersAsBits = usersAsBits.Where(u => u.Length == termAsBits.Length).ToList();
 
-            var totalCount = usersAsBits.Count;
-            var rem = totalCount % 8;
-            var rounds = totalCount / 8;
-
-            var vuser = new Vector<bool>();
-
-            var baseBin = ToBinary(termAsBits);
-            var bin = new bool[256];
-
-            for (int i = 0; i < 8; i++)
+            for (int r = 0; r < numberOfRequests; r++)
             {
-                for (int k = 0; k < 32; k++)
+
+
+                for (int i = 0; i < usersAsByte.Count; i++)
                 {
-                    bin[i * 8 + k] = baseBin[k];
-                }
-            }
-            var vterm = new Vector<bool>();
-
-            var dest = new bool[256];
-
-            for (int i = 0; i < numberOfRequests; i++)
-            {
-                count = 0;
-
-                for (int j = 0; j < usersAsBits.Count; j++)
-                {
-                    var baseVec = new bool[256];
-                    for (int k = j; k < j + 8; k++)
+                    if (termLength != usersAsByte[i].Length)
                     {
-                        for (int m = 0; m < 32; m++)
-                        {
-                            baseVec[k * 8 + m] = usersAsBits[k][m];
-                        }
-                        //baseVec.SetValue(usersAsBits[k], k);
+                        continue;
                     }
-                    vuser = new Vector<bool>(baseVec);
-                    var vresult = vuser ^ vterm;
-                    vresult.CopyTo(dest);
-                    count += GetNumberOfTerms(dest);
+                    else
+                    if (tempName.Length < Vector<byte>.Count)
+                    {
+                        tempName.SetValue(usersAsByte[i], tempName.Length - 1);
+                    }
+                    else
+                    {
+                        var vterm = new Vector<byte>(termByte);
+                        var vuser = new Vector<byte>(tempName);
+
+
+                        var vresult = Vector.Equals(vterm, vuser);
+
+                        vresult.CopyTo(dest);
+                        count += GetCount(dest);
+                    }
                 }
-
-
             }
 
             sw.Stop();
             Console.WriteLine($"Found : {count} => Time : {sw.ElapsedMilliseconds,-3:N0}");
+        }
+
+        private static int GetCount(byte[] model)
+        {
+            var count = 0;
+            //var index = 0;
+
+            for (int i = 0; i < 8; i++)
+            {
+                var same = true;
+                for (int k = 0; k < 4; k++)
+                {
+
+                    if (model[i * 4 + k] != 255)
+                    {
+                        same = false;
+                        break;
+                    }
+
+                    //index++;
+                }
+
+                if (same)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         public static void Execute2(int numberOfRequests, IList<string> users, string term)
