@@ -85,6 +85,9 @@ namespace Test.App
                     case "vector":
                         TestVector.Execute(numberOfRequests,users,Term);
                         break;
+                    case "long":
+                        TestByLong.Execute(numberOfRequests, users, Term);
+                        break;
 
                     default:
                         break;
