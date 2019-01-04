@@ -70,8 +70,9 @@ namespace VectorApp
             s.Stop();
             sec = s.ElapsedMilliseconds;
 
-            Console.WriteLine($" Vec : {result} => {s.ElapsedMilliseconds,5:N0} ms");
-            
+            Console.WriteLine($" Vec : {result} => {s.ElapsedMilliseconds,5:N0} ms (size:{vecSize}x{sizeof(int)}x8={vecSize* sizeof(int)*8} bits)");
+
+
         }
     }
 }
